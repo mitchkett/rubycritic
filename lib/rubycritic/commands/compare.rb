@@ -33,10 +33,13 @@ module RubyCritic
         original_no_browser_config = Config.no_browser
         Config.no_browser = true
         analyse_branch(:base_branch)
-        analyse_branch(:feature_branch)
-        Config.no_browser = original_no_browser_config
-        analyse_modified_files
-        compare_code_quality
+
+        unless Config.base_branch == Config.feature_branch
+          analyse_branch(:feature_branch) # current checked out branch
+          Config.no_browser = original_no_browser_config
+          analyse_modified_files
+          compare_code_quality
+        end
       end
 
       def set_root_paths

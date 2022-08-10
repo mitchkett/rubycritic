@@ -58,6 +58,15 @@ describe RubyCritic::Command::Compare do
 
     context 'when file from feature_branch has an equal or better score than base_branch' do
       it 'outputs score' do
+        module RubyCritic
+          module SourceControlSystem
+            class Git < Base
+              def self.current_branch
+                'base_branch'
+              end
+            end
+          end
+        end
         options = ['-b', 'feature_branch', '-t', '0', 'test/samples/compare_file.rb']
         options = RubyCritic::Cli::Options.new(options).parse.to_h
         RubyCritic::Config.set(options)
@@ -73,6 +82,12 @@ describe RubyCritic::Command::Compare do
       end
     end
   end
+
+  # describe 'when the base branch provided is the same as the current branch' do
+  #   it 'both branches are therefore the same so only run Rubycritic.compare once' do
+
+  #   end
+  # end
 
   describe 'with default options passing two branches' do
     before do
